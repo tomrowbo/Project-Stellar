@@ -181,7 +181,7 @@ export default function PasskeyWallet() {
     }
   }
 
-  // Reset/logout
+  // Reset/logout - this is now handled by the parent
   function handleLogout() {
     localStorage.removeItem('stellar:keyId');
     setKeyId(null);
@@ -193,125 +193,127 @@ export default function PasskeyWallet() {
   }
 
   return (
-    <div className="space-y-8">
-      <div className="bg-white shadow rounded-lg p-6">
-        <h2 className="text-xl font-semibold mb-4">Stellar Passkey Wallet</h2>
-        
-        {/* Wallet Status */}
-        {keyId && contractId && isConnected ? (
-          <div className="mb-6 space-y-3">
-            <div className="flex justify-between items-center">
-              <span className="text-gray-600">Contract ID:</span>
-              <a
-                href={`https://stellar.expert/explorer/testnet/contract/${contractId}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 hover:underline truncate max-w-[250px]"
-              >
-                {contractId.substring(0, 6)}...{contractId.substring(contractId.length - 6)}
-              </a>
-            </div>
-            
-            <div className="flex justify-between items-center">
-              <span className="text-gray-600">Key ID:</span>
-              <span className="truncate max-w-[250px]">
-                {keyId.substring(0, 6)}...{keyId.substring(keyId.length - 6)}
-              </span>
-            </div>
-            
-            <div className="flex justify-between items-center">
-              <span className="text-gray-600">Balance:</span>
-              <span className="font-semibold">
-                {loading.balance ? (
-                  <span className="text-gray-400">Loading...</span>
-                ) : (
-                  <span>{(parseInt(balance) / 10000000).toFixed(7)} XLM</span>
-                )}
-              </span>
-            </div>
-            
-            <div className="mt-4 flex space-x-3">
-              <button
-                onClick={handleFund}
-                disabled={loading.fund}
-                className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded disabled:opacity-50"
-              >
-                {loading.fund ? 'Funding...' : 'Fund'}
-              </button>
-              
-              <button
-                onClick={handleLogout}
-                className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded"
-              >
-                Reset
-              </button>
-            </div>
+    <div className="p-6">
+      {/* Simple test element */}
+      <div className="bg-yellow-300 p-4 mb-4 rounded-lg border-2 border-yellow-500">
+        This box should have a yellow background if Tailwind is working correctly.
+      </div>
+      
+      {/* Wallet Status */}
+      {keyId && contractId && isConnected ? (
+        <div className="space-y-3">
+          <div className="flex justify-between items-center">
+            <span className="text-gray-600">Contract ID:</span>
+            <a
+              href={`https://stellar.expert/explorer/testnet/contract/${contractId}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 hover:underline truncate max-w-[250px]"
+            >
+              {contractId.substring(0, 6)}...{contractId.substring(contractId.length - 6)}
+            </a>
           </div>
-        ) : (
-          <div className="flex space-x-3 mb-6">
+          
+          <div className="flex justify-between items-center">
+            <span className="text-gray-600">Key ID:</span>
+            <span className="truncate max-w-[250px]">
+              {keyId.substring(0, 6)}...{keyId.substring(keyId.length - 6)}
+            </span>
+          </div>
+          
+          <div className="flex justify-between items-center">
+            <span className="text-gray-600">Balance:</span>
+            <span className="font-semibold">
+              {loading.balance ? (
+                <span className="text-gray-400">Loading...</span>
+              ) : (
+                <span>{(parseInt(balance) / 10000000).toFixed(7)} XLM</span>
+              )}
+            </span>
+          </div>
+          
+          <div className="mt-4 flex space-x-3">
             <button
-              onClick={handleCreate}
-              disabled={loading.create || loading.connect}
+              onClick={handleFund}
+              disabled={loading.fund}
+              className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded disabled:opacity-50"
+            >
+              {loading.fund ? 'Funding...' : 'Fund'}
+            </button>
+            
+            <button
+              onClick={getBalance}
+              disabled={loading.balance}
               className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded disabled:opacity-50"
             >
-              {loading.create ? 'Creating...' : 'Create Wallet'}
-            </button>
-            
-            <button
-              onClick={handleConnect}
-              disabled={loading.connect || loading.create}
-              className="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded disabled:opacity-50"
-            >
-              {loading.connect ? 'Connecting...' : 'Connect Wallet'}
+              {loading.balance ? 'Refreshing...' : 'Refresh Balance'}
             </button>
           </div>
-        )}
-        
-        {/* Signers Section */}
-        {keyId && contractId && isConnected && (
-          <div>
-            <h3 className="text-lg font-semibold mb-3">Signers</h3>
-            {loading.signers ? (
-              <p className="text-gray-500">Loading signers...</p>
-            ) : signers.length > 0 ? (
-              <div className="border rounded-md overflow-hidden">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Key</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+        </div>
+      ) : (
+        <div className="flex space-x-3 mb-6">
+          <button
+            onClick={handleCreate}
+            disabled={loading.create || loading.connect}
+            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded disabled:opacity-50"
+          >
+            {loading.create ? 'Creating...' : 'Create Wallet'}
+          </button>
+          
+          <button
+            onClick={handleConnect}
+            disabled={loading.connect || loading.create}
+            className="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded disabled:opacity-50"
+          >
+            {loading.connect ? 'Connecting...' : 'Connect Wallet'}
+          </button>
+        </div>
+      )}
+      
+      {/* Signers Section */}
+      {keyId && contractId && isConnected && (
+        <div className="mt-6">
+          <h3 className="text-lg font-semibold mb-3">Signers</h3>
+          {loading.signers ? (
+            <p className="text-gray-500">Loading signers...</p>
+          ) : signers.length > 0 ? (
+            <div className="border rounded-md overflow-hidden">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Key</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {signers.map((signer) => (
+                    <tr key={signer.key}>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {signer.kind}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 truncate max-w-[200px]">
+                        {signer.key.substring(0, 6)}...{signer.key.substring(signer.key.length - 6)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm">
+                        <button
+                          onClick={() => handleRemoveSigner(signer.key)}
+                          disabled={loading[signer.key]}
+                          className="text-red-600 hover:text-red-900 disabled:opacity-50"
+                        >
+                          {loading[signer.key] ? 'Removing...' : 'Remove'}
+                        </button>
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {signers.map((signer) => (
-                      <tr key={signer.key}>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {signer.kind}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 truncate max-w-[200px]">
-                          {signer.key.substring(0, 6)}...{signer.key.substring(signer.key.length - 6)}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm">
-                          <button
-                            onClick={() => handleRemoveSigner(signer.key)}
-                            disabled={loading[signer.key]}
-                            className="text-red-600 hover:text-red-900 disabled:opacity-50"
-                          >
-                            {loading[signer.key] ? 'Removing...' : 'Remove'}
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            ) : (
-              <p className="text-gray-500">No signers found.</p>
-            )}
-          </div>
-        )}
-      </div>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <p className="text-gray-500">No signers found.</p>
+          )}
+        </div>
+      )}
     </div>
   );
 } 

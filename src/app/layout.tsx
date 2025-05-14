@@ -1,30 +1,34 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import { KeyIdProvider } from "@/store/keyId";
-import { ContractIdProvider } from "@/store/contractId";
+import "./globals.css"
+import type React from "react"
+import { Inter } from "next/font/google"
+import { ThemeProvider } from "@/components/theme-provider"
+import { KeyIdProvider } from "@/store/keyId"
+import { ContractIdProvider } from "@/store/contractId"
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"] })
 
-export const metadata: Metadata = {
-  title: "Stellar Passkey Demo",
-  description: "A demo of Stellar Passkey-kit using Next.js",
-};
+export const metadata = {
+  title: "Project Stellar - Your Digital Identity in the Stellar Network",
+  description:
+    "Project Stellar creates a secure digital wallet that works as your decentralized ID, with real-world asset verification and loyalty programs.",
+}
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: {
+  children: React.ReactNode
+}) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <KeyIdProvider>
-          <ContractIdProvider>
-            {children}
-          </ContractIdProvider>
-        </KeyIdProvider>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
+          <KeyIdProvider>
+            <ContractIdProvider>
+              {children}
+            </ContractIdProvider>
+          </KeyIdProvider>
+        </ThemeProvider>
       </body>
     </html>
-  );
+  )
 }
